@@ -263,8 +263,13 @@ function updateSpecialValues() {
     const ackt = backend_map["M_ACT_flag_read"].value;
 
     if (DOM.act_viz) {
-        DOM.act_viz.textContent =
-            ackt == 1 ? "Aktivna" : "Neaktivna";
+        const statusText = DOM.act_viz.querySelector(".status-window__text");
+        const statusValue = ackt == 1 ? "Aktivna" : "Neaktivna";
+        if (statusText) {
+            statusText.textContent = statusValue;
+        } else {
+            DOM.act_viz.textContent = statusValue;
+        }
     }
 
     //     // --- ENNA SETPOINT ---
