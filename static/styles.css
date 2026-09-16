@@ -245,7 +245,22 @@ button:hover {
 }
 
 @media (max-width: 600px) {
-  .container1 { grid-template-columns: 1fr; }
+  .container1 {
+    grid-template-columns: 1fr;
+  }
+
+  .container1 > a,
+  .container1 > div,
+  .scada-item {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .scada-item {
+    overflow: hidden;
+  }
+
   .status-box { width: 100%; }
 }
 
@@ -350,6 +365,7 @@ button:hover {
   letter-spacing: 0.2px;
   color: var(--text);
   line-height: 1.05;
+  font-variant-numeric: tabular-nums;
 }
 
 .scada-main--right {
@@ -371,6 +387,29 @@ button:hover {
 
 .scada-row .scada-sub {
   text-align: right;
+}
+
+@media (max-width: 600px) {
+  .scada-row > *,
+  .battery-row > * {
+    min-width: 0;
+  }
+
+  .scada-row > :last-child,
+  .battery-row > :last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: right;
+  }
+
+  .scada-row .scada-main,
+  .battery-row .scada-main {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    margin-left: auto;
+    white-space: nowrap;
+  }
 }
 
 .scada-row--stack {
@@ -544,9 +583,19 @@ button:hover {
 }
 
 .status-window::before {
-  content: "⏻";
-  font-size: 16px;
-  line-height: 1;
+  display: none;
+}
+
+.status-window__icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   opacity: 0.9;
 }
 
@@ -554,7 +603,7 @@ button:hover {
   border-color: rgba(34, 197, 94, 0.35);
 }
 
-.status-window[data-state="active"]::before {
+.status-window[data-state="active"] .status-window__icon {
   color: var(--green);
   opacity: 1;
 }
@@ -563,14 +612,9 @@ button:hover {
   border-color: rgba(239, 68, 68, 0.35);
 }
 
-.status-window[data-state="inactive"]::before {
+.status-window[data-state="inactive"] .status-window__icon {
   color: var(--red);
   opacity: 0.95;
-}
-
-.status-window[data-state="unknown"]::before {
-  color: var(--muted);
-  opacity: 0.8;
 }
 
 /* Inline details list (previously hover-only). */
@@ -767,6 +811,30 @@ button:hover {
 
 .energy-footer .scada-main-type {
     white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .energy-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .energy-footer .energy-line {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+
+  .energy-footer .energy-line:last-child {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+}
+
+/* Aggregated energy total: keep the UKUPNO group on the right side. */
+.energy-line--total {
+  justify-content: flex-end;
 }
 
 /* Registers section */
@@ -1695,6 +1763,12 @@ h1::after {
   font-size: 14px;
 }
 
+@media (max-width: 600px) {
+  .energy_label_font {
+    font-size: 13px;
+  }
+}
+
 .radio-section {
   display: flex;
   gap: 30px;
@@ -1777,6 +1851,51 @@ h1::after {
     align-items: center;
     width: 100%;
     white-space: nowrap;
+}
+
+.setpoint-mainline {
+    display: contents;
+}
+
+.setpoint-caption {
+  display: inline;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-transform: inherit;
+}
+
+@media (max-width: 600px) {
+  .setpoint-row {
+    display: block;
+    white-space: normal;
+  }
+
+  .setpoint-mainline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .setpoint-mainline > .register-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    margin-bottom: 0;
+  }
+
+  .setpoint-mainline > .text-right {
+    align-self: flex-start;
+    flex: 0 1 auto;
+    width: auto;
+    padding-bottom: 0 !important;
+    text-align: right;
+    white-space: nowrap;
+  }
 }
 
 /* Overlay */
@@ -1877,6 +1996,32 @@ h1::after {
     margin-bottom: 8px;
     border: 1px solid rgba(255,255,255,0.05);
 }
+
+@media (max-width: 600px) {
+  .popup_overlay:not(.hidden) {
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 12px;
+  }
+
+  .popup_overlay:not(.hidden) .popup {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 24px);
+    margin: 0;
+    overflow-y: auto;
+    transform: none;
+  }
+
+  .popup_overlay:not(.hidden) .popup_close-btn {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin-left: auto;
+  }
+}
+
 .clickable:hover {
   cursor: pointer;
 }
@@ -1888,16 +2033,39 @@ h1::after {
 
 /* Decimal split styling for dynamic values */
 .value-int {
+  display: inline-block;
   font-weight: inherit;
   color: inherit;
+  font-variant-numeric: tabular-nums;
 }
 
 .value-decimal {
+  display: inline-block;
   font-size: 0.66em;
   opacity: 0.8;
   font-weight: 600;
   letter-spacing: 0.01em;
   vertical-align: baseline;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+  .value-int,
+  .value-decimal {
+    align-self: auto;
+  }
+
+  .value-int {
+    min-width: 4ch;
+    text-align: right;
+  }
+
+  .value-decimal {
+    min-width: 3ch;
+    line-height: 1;
+    text-align: left;
+    transform: translateY(1px);
+  }
 }
 
 /* Header brand row: logo left, plant name right */
@@ -1938,13 +2106,13 @@ h1::after {
 @media (max-width: 700px) {
   .hud-brand-row {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
   }
 
   .hud-plant-name {
     width: 100%;
-    text-align: left;
+    text-align: center;
   }
 }
 
